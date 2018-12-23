@@ -7,7 +7,54 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
-const checkIcon = require('./circle-check.png');
+class ImageItem extends Component {
+  constructor(props) {
+    super(props)
+  }
+
+  componentWillMount() {
+    var { width } = Dimensions.get('window');
+    var { imageMargin, imagesPerRow, containerWidth } = this.props;
+
+    if (typeof containerWidth != "undefined") {
+      width = containerWidth;
+    }
+    this._imageSize = (width - (imagesPerRow + 1) * imageMargin) / imagesPerRow;
+  }
+
+  render() {
+    var { item, selected, selectedMarker, imageMargin } = this.props;
+
+    var marker = selectedMarker ? selectedMarker :
+      <Image
+        style={[styles.marker, { width: 25, height: 25 }]}
+        source={require('./circle-check.png')}
+      />;
+
+    var unMarker =
+      <Image
+        style={[styles.marker, { width: 25, height: 25 }]}
+        source={require('./circle-un-check.png')}
+      />;
+
+    var image = item.node.image;
+
+    return (
+      <TouchableOpacity
+        style={{ marginBottom: imageMargin, marginRight: imageMargin }}
+        onPress={() => this._handleClick(image)}>
+        <Image
+          source={{ uri: image.uri }}
+          style={{ height: this._imageSize, width: this._imageSize, borderRadius:5, borderWidth:0.5, borderColor:'#eee' }} />
+        {(selected) ? marker : unMarker}
+      </TouchableOpacity>
+    );
+  }
+
+  _handleClick(item) {
+    this.props.onClick(item);
+  }
+}
 
 const styles = StyleSheet.create({
   marker: {
@@ -16,54 +63,12 @@ const styles = StyleSheet.create({
     right: 5,
     backgroundColor: 'transparent',
   },
-});
-
-class ImageItem extends Component {
-  componentWillMount() {
-    let { width } = Dimensions.get('window');
-    const { imageMargin, imagesPerRow, containerWidth } = this.props;
-
-    if (typeof containerWidth !== 'undefined') {
-      width = containerWidth;
-    }
-    this.imageSize = (width - (imagesPerRow + 1) * imageMargin) / imagesPerRow;
-  }
-
-  handleClick(item) {
-    this.props.onClick(item);
-  }
-
-  render() {
-    const {
-      item, selected, selectedMarker, imageMargin,
-    } = this.props;
-
-    const marker = selectedMarker || (<Image
-      style={[styles.marker, { width: 25, height: 25 }]}
-      source={checkIcon}
-    />);
-
-    const { image } = item.node;
-
-    return (
-      <TouchableOpacity
-        style={{ marginBottom: imageMargin, marginRight: imageMargin }}
-        onPress={() => this.handleClick(image)}
-      >
-        <Image
-          source={{ uri: image.uri }}
-          style={{ height: this.imageSize, width: this.imageSize }}
-        />
-        {(selected) ? marker : null}
-      </TouchableOpacity>
-    );
-  }
-}
+})
 
 ImageItem.defaultProps = {
   item: {},
   selected: false,
-};
+}
 
 ImageItem.propTypes = {
   item: PropTypes.object,
@@ -72,6 +77,6 @@ ImageItem.propTypes = {
   imageMargin: PropTypes.number,
   imagesPerRow: PropTypes.number,
   onClick: PropTypes.func,
-};
+}
 
 export default ImageItem;
