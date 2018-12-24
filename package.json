@@ -1,15 +1,41 @@
 {
-  "name": "react-native-camera-roll-picker",
-  "version": "1.2.3",
-  "description": "A React Native component providing images selection from camera roll ",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
+  "_args": [
+    [
+      "git+https://github.com/hongthaiovi/react-native-camera-roll-picker.git",
+      "/Users/thai/ibroker-mobile"
+    ]
+  ],
+  "_from": "git+https://github.com/hongthaiovi/react-native-camera-roll-picker.git",
+  "_id": "react-native-camera-roll-picker@git+https://github.com/hongthaiovi/react-native-camera-roll-picker.git#9f7671ca47cab7bc4e3951e746587528660998eb",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/react-native-camera-roll-picker",
+  "_phantomChildren": {},
+  "_requested": {
     "type": "git",
-    "url": "git+https://github.com/jeanpan/react-native-camera-roll-picker.git"
+    "raw": "git+https://github.com/hongthaiovi/react-native-camera-roll-picker.git",
+    "rawSpec": "git+https://github.com/hongthaiovi/react-native-camera-roll-picker.git",
+    "saveSpec": "git+https://github.com/hongthaiovi/react-native-camera-roll-picker.git",
+    "fetchSpec": "https://github.com/hongthaiovi/react-native-camera-roll-picker.git",
+    "gitCommittish": null
   },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "git+https://github.com/hongthaiovi/react-native-camera-roll-picker.git#9f7671ca47cab7bc4e3951e746587528660998eb",
+  "_spec": "git+https://github.com/hongthaiovi/react-native-camera-roll-picker.git",
+  "_where": "/Users/thai/ibroker-mobile",
+  "author": {
+    "name": "jeanpan"
+  },
+  "bugs": {
+    "url": "https://github.com/jeanpan/react-native-camera-roll-picker/issues"
+  },
+  "dependencies": {
+    "prop-types": "^15.6.0"
+  },
+  "description": "A React Native component providing images selection from camera roll ",
+  "homepage": "https://github.com/jeanpan/react-native-camera-roll-picker#readme",
   "keywords": [
     "react-native-component",
     "react-component",
@@ -18,13 +44,15 @@
     "cameraroll",
     "picker"
   ],
-  "author": "jeanpan",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/jeanpan/react-native-camera-roll-picker/issues"
+  "main": "index.js",
+  "name": "react-native-camera-roll-picker",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeanpan/react-native-camera-roll-picker.git"
   },
-  "homepage": "https://github.com/jeanpan/react-native-camera-roll-picker#readme",
-  "dependencies": {
-    "prop-types": "^15.6.0"
-  }
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.2.3"
 }

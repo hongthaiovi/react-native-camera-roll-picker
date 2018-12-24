@@ -36,17 +36,17 @@ class ImageItem extends Component {
         style={[styles.marker, { width: 25, height: 25 }]}
         source={require('./circle-un-check.png')}
       />;
-
-    var image = item.node.image;
+    var isCamera = item.type == 'camera'
+    var image = isCamera ? item : item.node.image;
 
     return (
       <TouchableOpacity
         style={{ marginBottom: imageMargin, marginRight: imageMargin }}
-        onPress={() => this._handleClick(image)}>
+        onPress={() => isCamera ? this.props.onCameraClick() : this._handleClick(image)}>
         <Image
-          source={{ uri: image.uri }}
-          style={{ height: this._imageSize, width: this._imageSize, borderRadius:5, borderWidth:0.5, borderColor:'#eee' }} />
-        {(selected) ? marker : unMarker}
+          source={isCamera ? require('./tileCamera.png') : { uri: image.uri }}
+          style={{ height: this._imageSize, width: this._imageSize, borderRadius: 3, borderWidth: 0.5, borderColor: '#eee' }} />
+        {isCamera ? null : (selected) ? marker : unMarker}
       </TouchableOpacity>
     );
   }
@@ -77,6 +77,7 @@ ImageItem.propTypes = {
   imageMargin: PropTypes.number,
   imagesPerRow: PropTypes.number,
   onClick: PropTypes.func,
+  onCameraClick: PropTypes.func,
 }
 
 export default ImageItem;

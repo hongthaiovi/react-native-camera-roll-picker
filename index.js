@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   CameraRoll,
   Platform,
@@ -17,13 +17,13 @@ class CameraRollPicker extends Component {
     super(props);
 
     this.state = {
-      images: [],
+      images: [{ type: 'camera' }],
       selected: this.props.selected,
       lastCursor: null,
       initialLoading: true,
       loadingMore: false,
       noMore: false,
-      dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
+      dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }),
     };
   }
 
@@ -37,17 +37,29 @@ class CameraRollPicker extends Component {
     });
   }
 
+  reload() {
+    this.setState({
+      images: [{ type: 'camera' }],
+      selected: this.props.selected,
+      lastCursor: null,
+      initialLoading: true,
+      loadingMore: false,
+      noMore: false,
+      dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
+    }, () => { this._fetch(); });
+  }
+
   fetch() {
     if (!this.state.loadingMore) {
-      this.setState({loadingMore: true}, () => { this._fetch(); });
+      this.setState({ loadingMore: true }, () => { this._fetch(); });
     }
   }
 
   _fetch() {
-    var {groupTypes, assetType} = this.props;
+    var { groupTypes, assetType } = this.props;
 
     var fetchParams = {
-      first: 1000,
+      first: 100,
       groupTypes: groupTypes,
       assetType: assetType,
     };
@@ -88,7 +100,7 @@ class CameraRollPicker extends Component {
   }
 
   render() {
-    var {dataSource} = this.state;
+    var { dataSource } = this.state;
     var {
       scrollRenderAheadDistance,
       initialListSize,
@@ -103,15 +115,15 @@ class CameraRollPicker extends Component {
 
     if (this.state.initialLoading) {
       return (
-        <View style={[styles.loader, {backgroundColor}]}>
-          { loader || <ActivityIndicator /> }
+        <View style={[styles.loader, { backgroundColor }]}>
+          {loader || <ActivityIndicator />}
         </View>
       );
     }
 
     var listViewOrEmptyText = dataSource.getRowCount() > 0 ? (
       <ListView
-        style={{flex: 1,}}
+        style={{ flex: 1, }}
         scrollRenderAheadDistance={scrollRenderAheadDistance}
         initialListSize={initialListSize}
         pageSize={pageSize}
@@ -121,27 +133,28 @@ class CameraRollPicker extends Component {
         dataSource={dataSource}
         renderRow={rowData => this._renderRow(rowData)} />
     ) : (
-      <Text style={[{textAlign: 'center'}, emptyTextStyle]}>{emptyText}</Text>
-    );
+        <Text style={[{ textAlign: 'center' }, emptyTextStyle]}>{emptyText}</Text>
+      );
 
     return (
       <View
-        style={[styles.wrapper, {padding: imageMargin, paddingRight: 0, backgroundColor: backgroundColor},]}>
+        style={[styles.wrapper, { padding: imageMargin, paddingRight: 0, backgroundColor: backgroundColor },]}>
         {listViewOrEmptyText}
       </View>
     );
   }
 
   _renderImage(item) {
-    var {selected} = this.state;
+    var { selected } = this.state;
     var {
       imageMargin,
       selectedMarker,
       imagesPerRow,
-      containerWidth
+      containerWidth,
+      onCameraClick
     } = this.props;
 
-    var uri = item.node.image.uri;
+    var uri = item.type == 'camera' ? 'camera' :item.node.image.uri;
     var isSelected = (this._arrayObjectIndexOf(selected, 'uri', uri) >= 0) ? true : false;
 
     return (
@@ -152,6 +165,7 @@ class CameraRollPicker extends Component {
         imageMargin={imageMargin}
         selectedMarker={selectedMarker}
         imagesPerRow={imagesPerRow}
+        onCameraClick={onCameraClick}
         containerWidth={containerWidth}
         onClick={this._selectImage.bind(this)}
       />
@@ -165,7 +179,6 @@ class CameraRollPicker extends Component {
       }
       return this._renderImage(item);
     });
-
     return (
       <View style={styles.row}>
         {items}
@@ -187,19 +200,19 @@ class CameraRollPicker extends Component {
   }
 
   _selectImage(image) {
-    var {maximum, imagesPerRow, callback, selectSingleItem} = this.props;
+    var { maximum, imagesPerRow, callback, selectSingleItem } = this.props;
 
     var selected = this.state.selected,
-        index = this._arrayObjectIndexOf(selected, 'uri', image.uri);
+      index = this._arrayObjectIndexOf(selected, 'uri', image.uri);
 
     if (index >= 0) {
       selected.splice(index, 1);
     } else {
       if (selectSingleItem) {
-        selected.splice(0,selected.length);
+        selected.splice(0, selected.length);
       }
       if (selected.length < maximum) {
-        selected.push(image);
+        selected.splice(0, 0, image);
       }
     }
 
@@ -215,7 +228,7 @@ class CameraRollPicker extends Component {
 
   _nEveryRow(data, n) {
     var result = [],
-        temp = [];
+      temp = [];
 
     for (var i = 0; i < data.length; ++i) {
       if (i > 0 && i % n === 0) {
@@ -242,15 +255,17 @@ class CameraRollPicker extends Component {
 }
 
 const styles = StyleSheet.create({
-  wrapper:{
+  wrapper: {
     flexGrow: 1,
   },
   loader: {
     flexGrow: 1,
+    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    backgroundColor: 'white',
   },
-  row:{
+  row: {
     flexDirection: 'row',
     flex: 1,
   },
@@ -286,6 +301,7 @@ CameraRollPicker.propTypes = {
   imageMargin: PropTypes.number,
   containerWidth: PropTypes.number,
   callback: PropTypes.func,
+  onCameraClick: PropTypes.func,
   selected: PropTypes.array,
   selectedMarker: PropTypes.element,
   backgroundColor: PropTypes.string,
@@ -301,13 +317,16 @@ CameraRollPicker.defaultProps = {
   removeClippedSubviews: true,
   groupTypes: 'SavedPhotos',
   maximum: 15,
+  onCameraClick: function () {
+    console.log('camera click');
+  },
   imagesPerRow: 3,
   imageMargin: 5,
   selectSingleItem: false,
   assetType: 'Photos',
   backgroundColor: 'white',
   selected: [],
-  callback: function(selectedImages, currentImage) {
+  callback: function (selectedImages, currentImage) {
     console.log(currentImage);
     console.log(selectedImages);
   },
